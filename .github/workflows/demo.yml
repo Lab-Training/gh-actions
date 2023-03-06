@@ -3,9 +3,9 @@ on:
   # push:
   #   branches:
   #     - main
-  workflow_dispatch:
-#   schedule:
-#     - cron: '*/4 * * * *'
+  # workflow_dispatch:
+  schedule:
+    - cron: '*/4 * * * *'
 jobs:
   lint: 
     runs-on: self-hosted
