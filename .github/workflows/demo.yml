@@ -5,7 +5,7 @@ on:
   #     - main
   # workflow_dispatch:
   schedule:
-    - cron: '*/4 * * * *'
+    - cron: '0/2 * * * *'
 jobs:
   lint: 
     runs-on: self-hosted
