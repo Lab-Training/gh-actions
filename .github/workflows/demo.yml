@@ -1,0 +1,62 @@
+name: CI
+on:
+  # push:
+  #   branches:
+  #     - main
+  workflow_dispatch:
+#   schedule:
+#     - cron: '*/4 * * * *'
+jobs:
+  lint: 
+    runs-on: self-hosted
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint code
+        run: npm run lint
+  test:
+    needs: lint
+    runs-on: self-hosted
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: npm ci
+      - name: Test code
+        id: test-1
+        run: npm run test
+      - name: Upload test report
+        if: failure() && steps.test-1.outcome == 'failure'
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-report
+          path: test.json
+  build:
+    needs: test
+    runs-on: self-hosted
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: npm ci
+      - name: Build website
+        run: npm run build
+      - name: upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifact-files
+          path: |
+            dist
+            package.json
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Get artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: artifact-files
+      - name: output
+        run: ls
