@@ -1,8 +1,9 @@
-name: CI
+name: CI-feature
 on:
   push:
     branches:
       - main
+      - feature/actions
   workflow_dispatch:
   # schedule:
   #   - cron: '0/2 * * * *'
