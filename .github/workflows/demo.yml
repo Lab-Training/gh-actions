@@ -1,4 +1,4 @@
-name: CI-feature
+name: CI
 on:
   push:
     branches:
