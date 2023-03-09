@@ -33,10 +33,10 @@ jobs:
       - name: Load dependancy
         uses: ./.github/actions/cache-dep
       - name: Test code
+        continue-on-error: true
         id: test-1
-        run: echo 'run npm test'
+        run: run npm test
       - name: Upload test report
-        if: failure() && steps.test-1.outcome == 'failure'
         uses: actions/upload-artifact@v3
         with:
           name: test-report
