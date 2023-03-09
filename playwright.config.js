@@ -3,7 +3,7 @@
  * @type {import('@playwright/test').PlaywrightTestConfig}
  */
 const config = {
-  testDir: './src/test',
+  testDir: './tests',
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
   expect: {
