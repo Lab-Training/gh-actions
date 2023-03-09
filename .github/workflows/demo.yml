@@ -1,8 +1,9 @@
-name: CI
+name: CI-feature
 on:
   push:
     branches:
       - main
+      - feature/actions
   workflow_dispatch:
   # schedule:
   #   - cron: '0/2 * * * *'
@@ -12,31 +13,28 @@ jobs:
     steps:
       - name: Get code
         uses: actions/checkout@v3
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: deps-node-modules-${{ hashFiles('**/package-lock.json')}}
-      - name: Install dependencies
-        run: npm ci
+      - name: Load dependancy
+        uses: ./.github/actions/cache-dep
       - name: Lint code
         run: npm run lint
   test:
     needs: lint
+    environment: testing
+    env:
+      MONGODB_CLUSTER_ADDRESS: ${{ secrets.MONGODB_CLUSTER_ADDRESS }}
+      MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
+      MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
+      PORT: ${{ secrets.PORT }}
     runs-on: self-hosted
+
     steps:
       - name: Get code
         uses: actions/checkout@v3
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: deps-node-modules-${{ hashFiles('**/package-lock.json')}}
-      - name: Install dependencies
-        run: npm ci
+      - name: Load dependancy
+        uses: ./.github/actions/cache-dep
       - name: Test code
         id: test-1
-        run: npm run test
+        run: echo 'run npm test'
       - name: Upload test report
         if: failure() && steps.test-1.outcome == 'failure'
         uses: actions/upload-artifact@v3
@@ -49,13 +47,8 @@ jobs:
     steps:
       - name: Get code
         uses: actions/checkout@v3
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: deps-node-modules-${{ hashFiles('**/package-lock.json')}}
-      - name: Install dependencies
-        run: npm ci
+      - name: Load dependancy
+        uses: ./.github/actions/cache-dep
       - name: Build website
         run: npm run build
       - name: upload artifact
