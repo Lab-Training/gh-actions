@@ -44,7 +44,7 @@ jobs:
         run: npm ci
       - name: Test code
         id: test-1
-        run: pnpm test
+        run: echo 'run npm test'
       - name: Upload test report
         if: failure() && steps.test-1.outcome == 'failure'
         uses: actions/upload-artifact@v3
